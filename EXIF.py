@@ -2,7 +2,7 @@ import sys
 from PIL import Image, ImageQt, ExifTags
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QApplication, QFileDialog, QLabel, QVBoxLayout, QWidget, QPushButton, QScrollArea
+from PyQt5.QtWidgets import QApplication, QFileDialog, QLabel, QVBoxLayout, QWidget, QPushButton, QScrollArea, QHBoxLayout
 
 
 class ExifViewer(QWidget):
@@ -27,6 +27,15 @@ class ExifViewer(QWidget):
         #self.layout().addWidget(self.exif_label)
         #self.exif_label.setGeometry(10, 70, 480, 340)
 
+        self.layout = QVBoxLayout()
+        self.layout.setContentsMargins(10, 10, 10, 10)
+        self.button_layout = QHBoxLayout()
+        self.button_layout.addWidget(self.open_button)
+        self.button_layout.addStretch()
+        self.layout.addLayout(self.button_layout)
+        self.layout.addWidget(self.scroll_area)
+        self.setLayout(self.layout)
+        
     def open_image(self):
         # Open an image file and extract its EXIF data
         file_path, _ = QFileDialog.getOpenFileName(
