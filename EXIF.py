@@ -12,15 +12,18 @@ class ExifViewer(QWidget):
         self.setWindowTitle('EXIF Viewer')
         self.setMinimumSize(1, 1)
         self.setMaximumSize(512,512)
+        
 
         # Add a button to open an image file
         self.open_button = QPushButton('Open Image', self)
         self.open_button.clicked.connect(self.open_image)
-        self.open_button = QPushButton('Rotate', self)
-        self.open_button.clicked.connect(self.rotate_image)
-
+        self.rotate_button = QPushButton('Rotate', self)
+        global num
+        num = 0
+        self.rotate_button.clicked.connect(self.rotate_image)
         # Add a label to display the image
         self.image_label = QLabel(self)
+        self.pixmap = QPixmap()
         self.image_label.setScaledContents(True)
         
 
@@ -31,25 +34,31 @@ class ExifViewer(QWidget):
         
         self.exif_label = QLabel('No image opened.',  self.scroll_area)
         self.exif_label.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
+        self.exif_label.setMaximumHeight(200)
+       
         #self.exif_label.setMinimumSize(580, 380)
         self.scroll_area.setWidget(self.exif_label)
         self.scroll_area.setWidgetResizable(True)
+        
 
         # Set up the main layout
         self.layout = QVBoxLayout()
-        self.layout.insertWidget(0,self.open_button)
         self.layout.addWidget(self.open_button)
         self.layout.addWidget(self.image_label)
         self.layout.addWidget(self.scroll_area)
+        self.layout.addWidget(self.rotate_button)
         self.setLayout(self.layout)
     
+        
 
     def rotate_image(self):
-        img = QPixmap(file_path)
+        global num
+        num += 1
+        angle = num * 90
         trans = QTransform()
-        trans.rotate(90)
-        self.image_label.setPixmap(img.transformed(trans))
-        
+        trans.rotate(angle)
+        newimage = self.pixmap.transformed(trans)
+        self.image_label.setPixmap(newimage)
 
     def open_image(self):
         options = QFileDialog.Options()
@@ -62,9 +71,10 @@ class ExifViewer(QWidget):
             try:
                 with Image.open(file_path) as img:
                     # Display the image
+                    global qimg
                     qimg = QPixmap(file_path)
                     self.image_label.setPixmap(qimg)
-
+                    self.pixmap = qimg
                     
                     exif_data = img._getexif()
                     
