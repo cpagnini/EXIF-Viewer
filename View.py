@@ -1,12 +1,12 @@
-from PyQt5.QtWidgets import QLabel, QVBoxLayout, QWidget, QPushButton, QScrollArea, QSizePolicy
+from PyQt5.QtWidgets import QLabel, QVBoxLayout, QWidget, QPushButton, QScrollArea, QSizePolicy, QTableWidget, QAbstractItemView, QTabWidget,QFormLayout
 from PyQt5.QtGui import QPixmap
 
 class ImageViewer(QWidget):
-    def __init__(self):
+    def __init__(self, model):
         super().__init__()
         self.setWindowTitle('EXIF Viewer')
-        self.setMinimumSize(1, 1)
-        self.setMaximumSize(512, 512)
+        self.setMinimumSize(400, 400)
+        self.setMaximumSize(600, 600)
 
         # Add a button to open an image file
         self.open_button = QPushButton('Open Image', self)
@@ -18,24 +18,44 @@ class ImageViewer(QWidget):
         self.pixmap = QPixmap()
         self.image_label.setScaledContents(True)
 
-        # Add a label to display the EXIF data
-        # scroll area widget - Labels will move inside this widget
-        self.scroll_area = QScrollArea(self)
-        self.scroll_area.setMinimumSize(300, 100)
 
-        self.exif_label = QLabel('No image opened.',  self.scroll_area)
-        self.exif_label.setSizePolicy(
-            QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
-        self.exif_label.setMaximumHeight(200)
+        #set up exifTABLE
+        self.exif_table = None
+        self.exif_table = QTableWidget()
+        self.exif_table.setColumnCount(2)
+        
+        # Graphic properties
+        self.exif_table.setHorizontalHeaderLabels(('Property', 'Value'))  # Set header labels
+        self.exif_table.verticalHeader().setVisible(False)  # Hide rows' header (unneeded)
+        self.exif_table.setVerticalScrollMode(QAbstractItemView.ScrollPerPixel)  # Smooth vertical scrolling
+        self.exif_table.setHorizontalScrollMode(QAbstractItemView.ScrollPerPixel)  # Smooth horizontal scrolling
 
-        # self.exif_label.setMinimumSize(580, 380)
-        self.scroll_area.setWidget(self.exif_label)
-        self.scroll_area.setWidgetResizable(True)
+        # User should not be able to edit table cell values
+        self.exif_table.setEditTriggers(QTableWidget.NoEditTriggers)
+
+        # Add tabs
+        tabwidget = QTabWidget()
+        
+        #openimage tabs
+        openImage = QWidget(self)
+        layout = QFormLayout()
+        openImage.setLayout(layout)
+        layout.addRow(self.open_button)
+        layout.addRow(self.rotate_button)
+        layout.addRow(self.image_label)
+
+        tabwidget.addTab(openImage, 'OpenImage')
+
+        #exif tabs
+        exifData = QWidget(self)
+        layout = QFormLayout()
+        exifData.setLayout(layout)
+        layout.addRow(self.exif_table)
+        tabwidget.addTab(exifData, 'exif')
 
         # Set up the main layout
         self.layout = QVBoxLayout()
-        self.layout.addWidget(self.open_button)
-        self.layout.addWidget(self.image_label)
-        self.layout.addWidget(self.scroll_area)
-        self.layout.addWidget(self.rotate_button)
+        self.layout.addWidget(tabwidget)
+        
+        
         self.setLayout(self.layout)
