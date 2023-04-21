@@ -1,18 +1,34 @@
-from PyQt5.QtWidgets import QLabel, QVBoxLayout, QWidget, QPushButton, QScrollArea, QSizePolicy, QTableWidget, QAbstractItemView, QTabWidget,QFormLayout
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QAction,QToolBar,QMainWindow, QLabel, QVBoxLayout, QWidget, QTableWidget, QAbstractItemView, QTabWidget, QFormLayout
+from PyQt5.QtGui import QPixmap, QIcon
 
-class ImageViewer(QWidget):
+
+
+class ImageViewer(QMainWindow):
     def __init__(self, model):
         super().__init__()
+        self.model = model
         self.setWindowTitle('EXIF Viewer')
         self.setMinimumSize(400, 400)
         self.setMaximumSize(600, 600)
 
-        # Add a button to open an image file
-        self.open_button = QPushButton('Open Image', self)
-        self.rotate_button = QPushButton('Rotate', self)
-        global num
-        num = 0
+        # Create menu bar and add action
+        menuBar = self.menuBar()
+        fileMenu = menuBar.addMenu('&Sticazzi')
+        
+        toolbar = QToolBar("My main toolbar")
+        self.addToolBar(toolbar)
+        self.openAction = QAction('&Open',self)
+        self.openAction.setIcon(QIcon('open.png'))
+        toolbar.addAction(self.openAction)
+
+        self.rotateAction = QAction('&Rotate', self)
+        self.rotateAction.setIcon(QIcon('rotate_right.png'))
+        toolbar.addAction(self.rotateAction)
+
+        self.central_widget = QWidget()
+        self.setCentralWidget(self.central_widget)
+        lay = QVBoxLayout(self.central_widget)
+        
         # Add a label to display the image
         self.image_label = QLabel(self)
         self.pixmap = QPixmap()
@@ -40,22 +56,20 @@ class ImageViewer(QWidget):
         openImage = QWidget(self)
         layout = QFormLayout()
         openImage.setLayout(layout)
-        layout.addRow(self.open_button)
-        layout.addRow(self.rotate_button)
         layout.addRow(self.image_label)
 
-        tabwidget.addTab(openImage, 'OpenImage')
+        tabwidget.addTab(openImage, 'Image')
 
         #exif tabs
         exifData = QWidget(self)
         layout = QFormLayout()
         exifData.setLayout(layout)
         layout.addRow(self.exif_table)
-        tabwidget.addTab(exifData, 'exif')
+        tabwidget.addTab(exifData, 'Exif Infos')
 
         # Set up the main layout
         self.layout = QVBoxLayout()
         self.layout.addWidget(tabwidget)
         
+        lay.addWidget(tabwidget)
         
-        self.setLayout(self.layout)

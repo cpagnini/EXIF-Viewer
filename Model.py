@@ -1,4 +1,3 @@
-import PIL
 from PIL import Image,ExifTags
 from PyQt5.QtGui import QPixmap, QTransform
 
@@ -9,9 +8,11 @@ class ImageModel:
         self.num_rotations = 0
 
     def open_image(self, filepath):
+        self.num_rotations = 0
         with Image.open(filepath) as img:
             self.filepath = filepath
             self.exif_data = img._getexif()
+        
 
     def rotate_image(self):
         self.num_rotations += 1
@@ -131,4 +132,6 @@ class ImageModel:
             importantGPSInfos = "https://www.google.com/maps/place/"  + latitude + cardinal_lat + longitude + cardinal_lon
 
 
-        return importantGPSInfos
+            return importantGPSInfos
+        else:
+            return None
