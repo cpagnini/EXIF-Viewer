@@ -5,7 +5,9 @@ class ImageController:
         self.model = model
         self.view = view
         self.view.openAction.triggered.connect(self.open_image)
-        self.view.rotateAction.triggered.connect(self.rotate_image)
+        self.view.rotateRightAction.triggered.connect(self.rotateRight_image)
+        self.view.rotateLeftAction.triggered.connect(self.rotateLeft_image)
+        self.view.saveAction.triggered.connect(self.save_image)
         self.update_view()
 
     def open_image(self):
@@ -22,9 +24,31 @@ class ImageController:
                 print(f"Error opening image file: {e}")
                 self.view.exif_label.setText('Error opening image file.')
 
-    def rotate_image(self):
-        self.model.rotate_image()
+    def save_image(self):
+        if self.model.get_image() is None:
+            print('Do nothing')
+        else:
+            options = QFileDialog.Options()
+            options |= QFileDialog.DontUseNativeDialog
+            file_path, _ = QFileDialog.getSaveFileName(
+                self.view, 'Save Image', 'NoName.jpg', "Image Files (*.jpg *.png *.jpeg *.bmp *.gif)", options=options)
+            if file_path:
+                try:
+                    print(file_path)
+                    self.model.save_image(file_path)
+                except Exception as e:
+                    print(f"Error saving image file: {e}")
+                    self.view.exif_label.setText('Error saving image file.')
+
+
+    def rotateRight_image(self):
+        self.model.set_Rightangle()
         self.update_view()
+
+    def rotateLeft_image(self):
+        self.model.set_Leftangle()
+        self.update_view()
+    
 
     def update_view(self):
         if self.model.filepath:

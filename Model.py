@@ -1,55 +1,52 @@
-from PIL import Image,ExifTags
+from PIL import Image,ExifTags, ImageQt
 from PyQt5.QtGui import QPixmap, QTransform
 
 class ImageModel:
     def __init__(self):
+        self.image = None
         self.exif_data = None
         self.filepath = None
+        self.left_num_rotation = 0
+        self.right_num_rotation = 0
         self.num_rotations = 0
+        self.angle = 0
 
     def open_image(self, filepath):
         self.num_rotations = 0
         with Image.open(filepath) as img:
             self.filepath = filepath
+            self.image = QPixmap(filepath)
             self.exif_data = img._getexif()
         
+    def set_Rightangle(self):
+        self.right_num_rotation =1
+        self.num_rotations = self.right_num_rotation
+        self.angle = 90
 
-    def rotate_image(self):
-        self.num_rotations += 1
+    def set_Leftangle(self):
+        self.left_num_rotation =1
+        self.num_rotations = self.left_num_rotation
+        self.angle = -90
+
+    def save_image(self, filepath):
+       self.image.save(filepath)
 
     def get_image(self):
-        return QPixmap(self.filepath)
-
+        return self.image
+       
     def get_rotated_image(self):
-        angle = self.num_rotations * 90
+        angle = self.num_rotations * self.angle 
         trans = QTransform()
         trans.rotate(angle)
-        return self.get_image().transformed(trans)
+        self.image = self.image.transformed(trans)
+        return self.image
 
     def get_exif_data(self):
         if self.exif_data:
             return self.exif_data
         else:
             'No EXIF data found.'
-       
-        #     exif_str = ''
-        #     for tag_id in sorted(self.exif_data):
-        #         # Check if tag_id is for GPS coordinates
-        #         tag_name = ExifTags.TAGS.get(tag_id, tag_id)
-        #         tag_value = self.exif_data.get(tag_id)
-        #         if (tag_name == "GPSInfo"):
-        #             tag_value = self.getGPS(tag_value)
-        #         if isinstance(tag_value, bytes):
-        #             try:
-        #                 tag_value = tag_value.decode('utf-8')
-        #             except UnicodeDecodeError:
-        #                 tag_value = tag_value.decode('utf-8', 'replace')
-        #         exif_str += f'{tag_name}: {tag_value}\n'
-        #     exif_str += f'\n'
-        #     print(exif_str)
-        #     return exif_str
-        # else:
-        #     return 'No EXIF data found.'
+        
 
     def exif_key(self,key):
         return ExifTags.TAGS.get(key,key)
@@ -130,7 +127,6 @@ class ImageModel:
             longitude = str(int(Lon_values[0])) + '°' + str(int(Lon_values[1])) + '\'' + str(Lon_values[2]) + '\"'
             cardinal_lon = str(gps_Info['GPSLongitudeRef'])
             importantGPSInfos = "https://www.google.com/maps/place/"  + latitude + cardinal_lat + longitude + cardinal_lon
-
 
             return importantGPSInfos
         else:

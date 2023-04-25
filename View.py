@@ -13,7 +13,10 @@ class ImageViewer(QMainWindow):
 
         # Create menu bar and add action
         menuBar = self.menuBar()
-        fileMenu = menuBar.addMenu('&Sticazzi')
+        fileMenu = menuBar.addMenu('&File')
+        self.saveAction = QAction('&Save',fileMenu)
+        self.saveAction.setIcon(QIcon('Save.png'))
+        fileMenu.addAction(self.saveAction)
         
         toolbar = QToolBar("My main toolbar")
         self.addToolBar(toolbar)
@@ -21,9 +24,15 @@ class ImageViewer(QMainWindow):
         self.openAction.setIcon(QIcon('open.png'))
         toolbar.addAction(self.openAction)
 
-        self.rotateAction = QAction('&Rotate', self)
-        self.rotateAction.setIcon(QIcon('rotate_right.png'))
-        toolbar.addAction(self.rotateAction)
+        fileMenu.addAction(self.openAction)
+
+        self.rotateRightAction = QAction('&RotateRight', self)
+        self.rotateRightAction.setIcon(QIcon('rotate_right.png'))
+        toolbar.addAction(self.rotateRightAction)
+
+        self.rotateLeftAction = QAction('&RotateLeft', self)
+        self.rotateLeftAction.setIcon(QIcon('rotate_left.png'))
+        toolbar.addAction(self.rotateLeftAction)
 
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
