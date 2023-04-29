@@ -1,37 +1,40 @@
+import sys
 from PyQt5.QtWidgets import QAction,QToolBar,QMainWindow, QLabel, QVBoxLayout, QWidget, QTableWidget, QAbstractItemView, QTabWidget, QFormLayout
 from PyQt5.QtGui import QPixmap, QIcon
+from PyQt5.QtCore import QSize
 
 
 
 class ImageViewer(QMainWindow):
     def __init__(self, model):
-        super().__init__()
+        QMainWindow.__init__(self)
         self.model = model
         self.setWindowTitle('EXIF Viewer')
-        self.setMinimumSize(400, 400)
-        self.setMaximumSize(600, 600)
+        self.setMinimumSize(QSize(400, 400))
+        self.setMaximumSize(QSize(600, 600))
+        
 
         # Create menu bar and add action
         menuBar = self.menuBar()
         fileMenu = menuBar.addMenu('&File')
         self.saveAction = QAction('&Save',fileMenu)
-        self.saveAction.setIcon(QIcon('Save.png'))
+        self.saveAction.setIcon(QIcon('Content/Save.png'))
         fileMenu.addAction(self.saveAction)
         
         toolbar = QToolBar("My main toolbar")
         self.addToolBar(toolbar)
         self.openAction = QAction('&Open',self)
-        self.openAction.setIcon(QIcon('open.png'))
+        self.openAction.setIcon(QIcon('Content/open.png'))
         toolbar.addAction(self.openAction)
 
         fileMenu.addAction(self.openAction)
 
         self.rotateRightAction = QAction('&RotateRight', self)
-        self.rotateRightAction.setIcon(QIcon('rotate_right.png'))
+        self.rotateRightAction.setIcon(QIcon('Content/rotate_right.png'))
         toolbar.addAction(self.rotateRightAction)
 
         self.rotateLeftAction = QAction('&RotateLeft', self)
-        self.rotateLeftAction.setIcon(QIcon('rotate_left.png'))
+        self.rotateLeftAction.setIcon(QIcon('Content/rotate_left.png'))
         toolbar.addAction(self.rotateLeftAction)
 
         self.central_widget = QWidget()
@@ -79,6 +82,6 @@ class ImageViewer(QMainWindow):
         # Set up the main layout
         self.layout = QVBoxLayout()
         self.layout.addWidget(tabwidget)
-        
+
         lay.addWidget(tabwidget)
         

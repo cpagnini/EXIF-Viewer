@@ -1,4 +1,7 @@
+import webbrowser
 from PyQt5.QtWidgets import QFileDialog, QTableWidgetItem
+from PyQt5.QtCore import Qt
+import PIL
 
 class ImageController:
     def __init__(self, model, view):
@@ -11,15 +14,16 @@ class ImageController:
         self.update_view()
 
     def open_image(self):
+        #Opens dialog to choose image
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
         file_path, _ = QFileDialog.getOpenFileName(
             self.view, 'Open Image', '', "Image Files (*.jpg *.png *.jpeg *.bmp *.gif)", options=options)
-        #file_path = "C:\\Users\\claudio.pagnini\\Downloads\\gps_test2.jpg"
-        if file_path:
+        #Trying to open image 
+        if file_path: 
             try:
                 self.model.open_image(file_path)
-                self.update_view()
+                self.update_view() #Show it in a label
             except Exception as e:
                 print(f"Error opening image file: {e}")
                 self.view.exif_label.setText('Error opening image file.')
@@ -34,7 +38,6 @@ class ImageController:
                 self.view, 'Save Image', 'NoName.jpg', "Image Files (*.jpg *.png *.jpeg *.bmp *.gif)", options=options)
             if file_path:
                 try:
-                    print(file_path)
                     self.model.save_image(file_path)
                 except Exception as e:
                     print(f"Error saving image file: {e}")
@@ -49,6 +52,12 @@ class ImageController:
         self.model.set_Leftangle()
         self.update_view()
     
+    def resize_image(self):
+        fixed_height = 420
+        image = self.model.open_image(self.filepath)
+        height_percent = (fixed_height / float(image.size[1]))
+        width_size = int((float(image.size[0]) * float(height_percent)))
+        image = image.resize((width_size, fixed_height), PIL.Image.NEAREST)
 
     def update_view(self):
         if self.model.filepath:
@@ -65,15 +74,11 @@ class ImageController:
                     else:
                         self.view.exif_table.setItem(i, 0, QTableWidgetItem(tag_name))
                         self.view.exif_table.setItem(i, 1, QTableWidgetItem(str(_exif_data[key])))
-                    # Status bar description for clickable links
-                    # if 'http' in self.view.exif_table.item(i, 1).text():
-                    #     self.view.exif_table.setStatusTip(
-                    #         'Double click on the GPS location link to open a map centered at those GPS coordinates.')
                     i += 1
-                    #self.view.exif_table.itemDoubleClicked.connect(self.open_link)
-        #else:
-            #self.view.image_label.setPixmap(QPixmap())
-            #self.view.exif_label.setText('No image opened.')
+            self.view.exif_table.itemDoubleClicked.connect(self.open_link)
 
-    #def open_link(self):
-        #if 'http' in self.view.exif_table.item
+
+    def open_link(self, item):
+        #If the item passed has maps in it, open browswer with its text - aka a Link
+        if 'maps' in item.text():
+            webbrowser.open(item.text())

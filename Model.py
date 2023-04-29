@@ -53,6 +53,7 @@ class ImageModel:
     
     def manage_gps_info(self,data):
         if data is not None:
+            canGetGeolocalization = True
             #create dictonary of all GPS infos
             gps_Info = {}
 
@@ -61,12 +62,20 @@ class ImageModel:
                 gps_Info['GPSVersionID'] = data.get(0)
             if (data.get(1) is not None):
                 gps_Info['GPSLatitudeRef'] = data.get(1)
+            else:
+                canGetGeolocalization = False
             if (data.get(2) is not None):
                 gps_Info['GPSLatitude'] = data.get(2)
+            else:
+                canGetGeolocalization = False
             if (data.get(3) is not None):
                 gps_Info['GPSLongitudeRef'] = data.get(3)
+            else:
+                canGetGeolocalization = False
             if (data.get(4) is not None):
                 gps_Info['GPSLongitude'] = data.get(4)
+            else:
+                canGetGeolocalization = False
             if (data.get(5) is not None):
                 gps_Info['GPSAltitudeRef'] = data.get(5)
             if(data.get(6) is not None):
@@ -119,15 +128,17 @@ class ImageModel:
             #     gps_Info['GPSDifferential'] = data.get(29)
             # if (data.get(30) is not None):
             #     gps_Info['GPSHPositioningError'] = data.get(30)
+            if(canGetGeolocalization):
+                Lat_values =tuple(gps_Info['GPSLatitude'])
+                latitude = str(int(Lat_values[0])) + '°' + str(int(Lat_values[1])) + '\'' + str(Lat_values[2]) + '\"'
+                cardinal_lat = str(gps_Info['GPSLatitudeRef'])
+                Lon_values = tuple(gps_Info['GPSLongitude'])
+                longitude = str(int(Lon_values[0])) + '°' + str(int(Lon_values[1])) + '\'' + str(Lon_values[2]) + '\"'
+                cardinal_lon = str(gps_Info['GPSLongitudeRef'])
+                importantGPSInfos = "https://www.google.com/maps/place/"  + latitude + cardinal_lat + longitude + cardinal_lon
 
-            Lat_values =tuple(gps_Info['GPSLatitude'])
-            latitude = str(int(Lat_values[0])) + '°' + str(int(Lat_values[1])) + '\'' + str(Lat_values[2]) + '\"'
-            cardinal_lat = str(gps_Info['GPSLatitudeRef'])
-            Lon_values = tuple(gps_Info['GPSLongitude'])
-            longitude = str(int(Lon_values[0])) + '°' + str(int(Lon_values[1])) + '\'' + str(Lon_values[2]) + '\"'
-            cardinal_lon = str(gps_Info['GPSLongitudeRef'])
-            importantGPSInfos = "https://www.google.com/maps/place/"  + latitude + cardinal_lat + longitude + cardinal_lon
-
-            return importantGPSInfos
+                return importantGPSInfos
+            else:
+                return None
         else:
             return None
