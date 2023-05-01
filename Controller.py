@@ -7,9 +7,11 @@ class ImageController:
     def __init__(self, model, view):
         self.model = model
         self.view = view
+        self.file_path = None
         self.view.openAction.triggered.connect(self.open_image)
         self.view.rotateRightAction.triggered.connect(self.rotateRight_image)
         self.view.rotateLeftAction.triggered.connect(self.rotateLeft_image)
+        self.view.resetAction.triggered.connect(self.reset_image)
         self.view.saveAction.triggered.connect(self.save_image)
         self.update_view()
 
@@ -22,6 +24,7 @@ class ImageController:
         #Trying to open image 
         if file_path: 
             try:
+                self.file_path = file_path
                 self.model.open_image(file_path)
                 self.update_view() #Show it in a label
             except Exception as e:
@@ -51,10 +54,19 @@ class ImageController:
     def rotateLeft_image(self):
         self.model.set_Leftangle()
         self.update_view()
+
+    def reset_image(self):
+        if self.file_path is not None:
+            self.model.open_image(self.file_path)
+            self.update_view()
+        else:
+            return
     
     def resize_image(self):
         fixed_height = 420
-        image = self.model.open_image(self.filepath)
+        image = self.model.getImage()
+        h = image.h
+        w = image.w
         height_percent = (fixed_height / float(image.size[1]))
         width_size = int((float(image.size[0]) * float(height_percent)))
         image = image.resize((width_size, fixed_height), PIL.Image.NEAREST)

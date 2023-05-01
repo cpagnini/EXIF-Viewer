@@ -37,6 +37,10 @@ class ImageViewer(QMainWindow):
         self.rotateLeftAction.setIcon(QIcon('Content/rotate_left.png'))
         toolbar.addAction(self.rotateLeftAction)
 
+        self.resetAction = QAction('&Reset', self)
+        self.resetAction.setIcon(QIcon('Content/reset.png'))
+        toolbar.addAction(self.resetAction)
+
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
         lay = QVBoxLayout(self.central_widget)
