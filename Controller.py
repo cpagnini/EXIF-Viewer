@@ -13,7 +13,9 @@ class ImageController:
         self.view.rotateLeftAction.triggered.connect(self.rotateLeft_image)
         self.view.resetAction.triggered.connect(self.reset_image)
         self.view.saveAction.triggered.connect(self.save_image)
+        self.view.exif_table.itemDoubleClicked.connect(self.open_link)
         self.update_view()
+        print('controller')
 
     def open_image(self):
         #Opens dialog to choose image
@@ -87,7 +89,6 @@ class ImageController:
                         self.view.exif_table.setItem(i, 0, QTableWidgetItem(tag_name))
                         self.view.exif_table.setItem(i, 1, QTableWidgetItem(str(_exif_data[key])))
                     i += 1
-            self.view.exif_table.itemDoubleClicked.connect(self.open_link)
 
 
     def open_link(self, item):
