@@ -40,7 +40,7 @@ The application allow to view (if avaiable) EXIF data
 
 ### GPS Info
 
-Whenever EXIF data does contains GPS Info, the application allow to double click on the link provided in order to open in a browser a Google Maps page.
+Whenever EXIF data does contains GPS Info, the application allow to double click on the link provided in order to open in a browser a Google Maps page
 
 
 
