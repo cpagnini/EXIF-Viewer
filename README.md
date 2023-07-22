@@ -43,8 +43,15 @@ The application allow to view (if avaiable) EXIF data
 Whenever EXIF data does contains GPS Info, the application allow to double click on the link provided in order to open in a browser a Google Maps page
 
 
+### Requirements
 
+The following are requirements used to test the application
 
+| Package        | Version          
+| ------------- |:-------------:|
+| Pillow      | 9.5.0 |
+| PyQt5      | 5.15.9      |
+| Python | 3.10.7      |
 
 [1]:https://www.nationalarchives.gov.uk/PRONOM/Format/proFormatSearch.aspx?status=detailReport&id=2330#:~:text=Exchangeable%20image%20file%20format%20(Exif,files%20recorded%20by%20digital%20cameras.
  
