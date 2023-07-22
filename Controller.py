@@ -1,6 +1,6 @@
 import webbrowser
 from PyQt5.QtWidgets import QFileDialog, QTableWidgetItem
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QSize
 import PIL
 
 class ImageController:
@@ -15,7 +15,7 @@ class ImageController:
         self.view.saveAction.triggered.connect(self.save_image)
         self.view.exif_table.itemDoubleClicked.connect(self.open_link)
         self.update_view()
-        print('controller')
+        #print('controller')
 
     def open_image(self):
         #Opens dialog to choose image
@@ -35,7 +35,7 @@ class ImageController:
 
     def save_image(self):
         if self.model.get_image() is None:
-            print('Do nothing')
+            self.view.exif_label.setText('No image to save')
         else:
             options = QFileDialog.Options()
             options |= QFileDialog.DontUseNativeDialog
@@ -64,18 +64,30 @@ class ImageController:
         else:
             return
     
-    def resize_image(self):
-        fixed_height = 420
-        image = self.model.getImage()
-        h = image.h
-        w = image.w
-        height_percent = (fixed_height / float(image.size[1]))
-        width_size = int((float(image.size[0]) * float(height_percent)))
-        image = image.resize((width_size, fixed_height), PIL.Image.NEAREST)
+    def resize_image(self,size):
+        # calculate new label size while maintaining aspect ratio
+        w = 0
+        h = 0
+        width_ratio = size.width() / 512
+        height_ratio = size.height() / 512
+        if width_ratio > height_ratio:
+            w = 512
+            h = int(size.height() / width_ratio)
+            new_size = QSize(512, int(size.height() / width_ratio))
+        else:
+            h = int(size.width() / height_ratio)
+            w = 512
+            new_size = QSize(int(size.width() / height_ratio), 512)
+        return h,w
+        
+        
 
     def update_view(self):
         if self.model.filepath:
-            self.view.image_label.setPixmap(self.model.get_rotated_image())
+            rotateImg = self.model.get_rotated_image()
+            size = rotateImg.size()
+            h, w = self.resize_image(size)
+            self.view.image_label.setPixmap(rotateImg)
             _exif_data = self.model.get_exif_data()
             if(_exif_data is not None):
                 self.view.exif_table.setRowCount(len(_exif_data))

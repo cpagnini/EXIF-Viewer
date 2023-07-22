@@ -106,28 +106,31 @@ class ImageModel:
                 gps_Info['GPSDestLatitudeRef'] = data.get(18)
             if (data.get(19) is not None):
                 gps_Info['GPSDestLatitude'] = data.get(19)
-            # if (data.get(20) is not None):
-            #     gps_Info['GPSDestLatitude'] = data.get(20)
-            # if (data.get(21) is not None):
-            #     gps_Info['GPSDestLongitude'] = data.get(21)
-            # if (data.get(22) is not None):
-            #     gps_Info['GPSDestBearingRef'] = data.get(22)
-            # if (data.get(23) is not None):
-            #     gps_Info['GPSDestBearing'] = data.get(23)
-            # if (data.get(24) is not None):
-            #     gps_Info['GPSDestDistanceRef'] = data.get(24)
-            # if (data.get(25) is not None):
-            #     gps_Info['GPSDestDistance'] = data.get(25)
-            # if (data.get(26) is not None):
-            #     gps_Info['GPSProcessingMethod'] = data.get(26)
-            # if (data.get(27) is not None):
-            #     gps_Info['GPSAreaInformation'] = data.get(27)
-            # if (data.get(28) is not None):
-            #     gps_Info['GPSDateStamp'] = data.get(28)
-            # if (data.get(29) is not None):
-            #     gps_Info['GPSDifferential'] = data.get(29)
-            # if (data.get(30) is not None):
-            #     gps_Info['GPSHPositioningError'] = data.get(30)
+            if (data.get(20) is not None):
+                gps_Info['GPSDestLatitude'] = data.get(20)
+            if (data.get(21) is not None):
+                gps_Info['GPSDestLongitude'] = data.get(21)
+            if (data.get(22) is not None):
+                gps_Info['GPSDestBearingRef'] = data.get(22)
+            if (data.get(23) is not None):
+                gps_Info['GPSDestBearing'] = data.get(23)
+            if (data.get(24) is not None):
+                gps_Info['GPSDestDistanceRef'] = data.get(24)
+            if (data.get(25) is not None):
+                gps_Info['GPSDestDistance'] = data.get(25)
+            if (data.get(26) is not None):
+                gps_Info['GPSProcessingMethod'] = data.get(26)
+            if (data.get(27) is not None):
+                gps_Info['GPSAreaInformation'] = data.get(27)
+            if (data.get(28) is not None):
+                gps_Info['GPSDateStamp'] = data.get(28)
+            if (data.get(29) is not None):
+                gps_Info['GPSDifferential'] = data.get(29)
+            if (data.get(30) is not None):
+                gps_Info['GPSHPositioningError'] = data.get(30)
+            if data.get(31) is not None:
+                gps_Info['GPSHPositioningError'] = data.get(31)
+                
             if(canGetGeolocalization):
                 Lat_values =tuple(gps_Info['GPSLatitude'])
                 latitude = str(int(Lat_values[0])) + '°' + str(int(Lat_values[1])) + '\'' + str(Lat_values[2]) + '\"'
