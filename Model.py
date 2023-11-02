@@ -1,8 +1,10 @@
 from PIL import Image,ExifTags, ImageQt
 from PyQt5.QtGui import QPixmap, QTransform
 
+# ImageModel class responsible for managing image data and EXIF information
 class ImageModel:
     def __init__(self):
+        # Initialize the model with initial data
         self.image = None
         self.exif_data = None
         self.filepath = None
@@ -11,53 +13,60 @@ class ImageModel:
         self.num_rotations = 0
         self.angle = 0
 
+    # Function to open an image file and extract EXIF data
     def open_image(self, filepath):
         self.num_rotations = 0
         with Image.open(filepath) as img:
             self.filepath = filepath
             self.image = QPixmap(filepath)
             self.exif_data = img._getexif()
-        
+
+    # Function to set the image rotation angle to 90 degrees clockwise
     def set_Rightangle(self):
         self.right_num_rotation =1
         self.num_rotations = self.right_num_rotation
         self.angle = 90
 
+   # Function to set the image rotation angle to 90 degrees counterclockwise
     def set_Leftangle(self):
         self.left_num_rotation =1
         self.num_rotations = self.left_num_rotation
         self.angle = -90
 
+    # Function to save the current image to a file
     def save_image(self, filepath):
        self.image.save(filepath)
 
+    # Function to get the current image
     def get_image(self):
         return self.image
-       
+
+    # Function to get the rotated image based on the current angle
     def get_rotated_image(self):
         angle = self.num_rotations * self.angle 
         trans = QTransform()
         trans.rotate(angle)
         self.image = self.image.transformed(trans)
         return self.image
-
+    
+    # Function to get the EXIF data of the image
     def get_exif_data(self):
         if self.exif_data:
             return self.exif_data
         else:
             'No EXIF data found.'
         
-
+    # Function to map EXIF tag keys to their corresponding human-readable names
     def exif_key(self,key):
         return ExifTags.TAGS.get(key,key)
     
+    # Function to extract and format GPS information from EXIF data
     def manage_gps_info(self,data):
         if data is not None:
             canGetGeolocalization = True
-            #create dictonary of all GPS infos
             gps_Info = {}
 
-            # Check about all the infos about GPS https://exiftool.org/TagNames/GPS.html
+            # Extract specific GPS information from EXIF data
             if(data.get(0) is not None):
                 gps_Info['GPSVersionID'] = data.get(0)
             if (data.get(1) is not None):
@@ -130,7 +139,8 @@ class ImageModel:
                 gps_Info['GPSHPositioningError'] = data.get(30)
             if data.get(31) is not None:
                 gps_Info['GPSHPositioningError'] = data.get(31)
-                
+            
+            # Continue extracting other GPS information as needed
             if(canGetGeolocalization):
                 Lat_values =tuple(gps_Info['GPSLatitude'])
                 latitude = str(int(Lat_values[0])) + '°' + str(int(Lat_values[1])) + '\'' + str(Lat_values[2]) + '\"'
